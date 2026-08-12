@@ -238,34 +238,123 @@ behavior:"smooth"
 });
 
 };
+// ======================================
+// CONTACT FORM - FORMSUBMIT AJAX
+// ======================================
 
-// ==============================
-// Contact Form
-// ==============================
-
-const contactForm = document.querySelector(
-    '#contact form'
-);
+const contactForm = document.getElementById("contactForm");
+const formMessage = document.getElementById("formMessage");
 
 if (contactForm) {
 
-    contactForm.addEventListener("submit", () => {
+    contactForm.addEventListener("submit", async function (e) {
+
+        e.preventDefault();
 
         const button = contactForm.querySelector("button");
 
-        if (button) {
+        const originalButtonText = button.innerHTML;
 
-            button.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        // Show sending state
+        button.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
 
-            button.disabled = true;
+        button.disabled = true;
+
+
+        const formData = new FormData(contactForm);
+
+
+        try {
+
+            const response = await fetch(
+                "https://formsubmit.co/ajax/muhammadsaadrauf2003@gmail.com",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Accept": "application/json"
+                    },
+
+                    body: formData
+                }
+            );
+
+
+            const data = await response.json();
+
+
+            if (response.ok && data.success) {
+
+                // Success message
+                formMessage.innerHTML = `
+                    <div class="success-message">
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <div>
+                            <strong>Message Sent Successfully!</strong>
+
+                            <p>
+                                Thank you for contacting me.
+                                I'll get back to you soon.
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+
+                // Clear form
+                contactForm.reset();
+
+
+                // Restore button
+                button.innerHTML =
+                    '<i class="fa-solid fa-check"></i> Message Sent';
+
+
+                // After 5 seconds restore button
+                setTimeout(() => {
+
+                    button.innerHTML = originalButtonText;
+
+                    button.disabled = false;
+
+                }, 5000);
+
+
+            } else {
+
+                throw new Error("Message could not be sent.");
+
+            }
+
+
+        } catch (error) {
+
+            formMessage.innerHTML = `
+                <div class="error-message">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+
+                    <div>
+                        <strong>Unable to Send Message</strong>
+
+                        <p>
+                            Please try again in a few moments.
+                        </p>
+                    </div>
+                </div>
+            `;
+
+
+            button.innerHTML = originalButtonText;
+
+            button.disabled = false;
 
         }
 
     });
 
 }
-
 // ==============================
 // Fade Cards
 // ==============================
