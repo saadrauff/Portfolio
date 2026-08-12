@@ -243,19 +243,26 @@ behavior:"smooth"
 // Contact Form
 // ==============================
 
-const form=document.querySelector("form");
+const contactForm = document.querySelector(
+    '#contact form'
+);
 
-if(form){
+if (contactForm) {
 
-form.addEventListener("submit",(e)=>{
+    contactForm.addEventListener("submit", () => {
 
-e.preventDefault();
+        const button = contactForm.querySelector("button");
 
-alert("Thank you! Your message has been received.");
+        if (button) {
 
-form.reset();
+            button.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
 
-});
+            button.disabled = true;
+
+        }
+
+    });
 
 }
 
